@@ -1,0 +1,7 @@
+#!/bin/bash
+launchctl unload ~/Library/LaunchAgents/LocationChanger.plist
+rm ~/Library/LaunchAgents/LocationChanger.plist
+rm ~/.locationchanger
+sudo rm /usr/local/bin/locationchanger
+sudo rm /usr/local/var/log/locationchanger.log
+sudo rmdir /usr/local/var/log
