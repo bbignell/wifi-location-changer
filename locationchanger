@@ -22,7 +22,7 @@ PREF_FILE="$HOME/.locationchanger"
 #    Home Network,Home
 
 LOOKUP_LOCATION=`grep -F "$SSID," $PREF_FILE | cut -f 2 -d ,`
-DEFAULT_LOCATION=`grep -F '***' $PREF_FILE | cut -f 2 -d ,`
+DEFAULT_LOCATION=`grep -F '***,' $PREF_FILE | cut -f 2 -d ,`
 
 # is our SSID in the map of lookup locations...
 if [[ -n $LOOKUP_LOCATION ]]; then
