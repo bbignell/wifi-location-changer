@@ -21,8 +21,10 @@ PREF_FILE="$HOME/.locationchanger"
 #    SAP-Corporate,Corporate
 #    Home Network,Home
 
+# This will potentially return false positives for SSID that are suffixes of SSIDs in the .locationchanger file
+# but at least thanks to the -F option, the matching is done on litteral string instead of regex (think of an SSID containing ^ $ [ ] * . -, assuming it is allowed)
 LOOKUP_LOCATION=`grep -F "$SSID," $PREF_FILE | cut -f 2 -d ,`
-DEFAULT_LOCATION=`grep -F '***,' $PREF_FILE | cut -f 2 -d ,`
+DEFAULT_LOCATION=`grep '^\*\*\*,' $PREF_FILE | cut -f 2 -d ,`
 
 # is our SSID in the map of lookup locations...
 if [[ -n $LOOKUP_LOCATION ]]; then
