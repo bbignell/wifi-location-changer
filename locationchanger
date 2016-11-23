@@ -1,4 +1,4 @@
-#!/usr/local/bin/bash
+#!/bin/bash
 
 # automatically change configuration of Mac OS X based on location
 exec &>/usr/local/var/log/locationchanger.log
@@ -13,7 +13,7 @@ SSID=`/System/Library/PrivateFrameworks/Apple80211.framework/Versions/A/Resource
  | grep ' SSID:' | cut -d ':' -f 2 | tr -d ' '`
 
 CURRENT_LOCATION=`scselect | grep " \* " | cut -d "(" -f 2 | cut -d ")" -f 1`
-
+PREF_FILE="$HOME/.locationchanger"
 # get a map of SSID -> locations from ~/.locationchanger
 # The file should contain lines with comma-separated SSID,Location values
 # A default value can be specified using the *** SSID, for example:
@@ -21,11 +21,8 @@ CURRENT_LOCATION=`scselect | grep " \* " | cut -d "(" -f 2 | cut -d ")" -f 1`
 #    SAP-Corporate,Corporate
 #    Home Network,Home
 
-declare -A NETWORK_LOCATIONS
-while IFS=, read -r net loc; do NETWORK_LOCATIONS[$net]=$loc; done < ~/.locationchanger
-
-LOOKUP_LOCATION=${NETWORK_LOCATIONS[$SSID]}
-DEFAULT_LOCATION=${NETWORK_LOCATIONS["***"]}
+LOOKUP_LOCATION=`grep -F "$SSID," $PREF_FILE | cut -f 2 -d ,`
+DEFAULT_LOCATION=`grep -F '***' $PREF_FILE | cut -f 2 -d ,`
 
 # is our SSID in the map of lookup locations...
 if [[ -n $LOOKUP_LOCATION ]]; then
@@ -38,7 +35,8 @@ elif [[ -n $DEFAULT_LOCATION ]]; then
 
 # ...else we'll try to match the SSID and location names, e.g. SSID "My Network" matches location "MyNetwork"
 else
-  echo 'No matching location for $SSID found in: ${!NETWORK_LOCATIONS[@]}'
+  echo "No matching location for $SSID found in: $PREF_FILE:"
+  cat $PREF_FILE
 
   # basic pattern matching to get all location names separated by newlines
   LOCATION_NAMES=`scselect | tail -n +2 | cut -d "(" -f 2 | cut -d ")" -f 1`

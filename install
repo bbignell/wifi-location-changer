@@ -1,7 +1,8 @@
 #!/bin/bash
-sudo mkdir /usr/local/var/log
+sudo mkdir -p /usr/local/var/log
 sudo cp locationchanger /usr/local/bin
-cp .locationchanger ~/
+# Avoid overwriting preferences
+[ ! -f ~/.locationchanger ] && cp .locationchanger ~/
 cp LocationChanger.plist ~/Library/LaunchAgents/
 launchctl unload ~/Library/LaunchAgents/LocationChanger.plist
 launchctl load ~/Library/LaunchAgents/LocationChanger.plist
